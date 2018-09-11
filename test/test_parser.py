@@ -1,5 +1,15 @@
 import unittest
-from h2p.parser import Expression, Application, Value, Number, ListEnumeration, Range, parse
+from h2p.parser import (
+        Expression, 
+        Application, 
+        Value, 
+        Number, 
+        ListEnumeration, 
+        ListComprehension, 
+        Range, 
+        Pattern,
+        parse
+        )
 
 
 class TestH2PParser(unittest.TestCase):
@@ -90,4 +100,59 @@ class TestH2PParser(unittest.TestCase):
                 []
                 )
         result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_simple_comprehension(self):
+        inputData = "[x | x <- [1..]]"
+        expected = Application(
+                Expression(
+                    Value(
+                        ListComprehension(
+                            Application(Expression("x"), []), 
+                            [(
+                                Pattern("x"), 
+                                Range(Application(Expression(Value(Number("1"))), []), None, None)
+                                )],
+                            None
+                            )
+                        )
+                    ),
+                []
+                )
+        result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_comprehension_with_two_productions(self):
+        inputData = "[x | x <- [1..], y <- [1, 3..11]]"
+        expected = Application(
+                Expression(
+                    Value(
+                        ListComprehension(
+                            Application(Expression("x"), []), 
+                            [
+                                (
+                                    Pattern("x"), 
+                                    Range(Application(Expression(Value(Number("1"))), []), None, None)
+                                    ),
+                                (
+                                    Pattern("y"), 
+                                    Range(
+                                        Application(Expression(Value(Number("1"))), []),
+                                        Application(Expression(Value(Number("11"))), []),
+                                        Application(Expression(Value(Number("3"))), [])
+                                        )
+                                    )
+                                ],
+                            None
+                            )
+                        )
+                    ),
+                []
+                )
+        print()
+        print("EXPECTED")
+        print(expected)
+        print("RESULT")
+        result = parse(inputData)
+        print(result)
         self.assertEqual(expected, result)

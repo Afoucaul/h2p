@@ -130,13 +130,14 @@ def p_list_comprehension(p):
     elif len(p) == 6:
         p[0] = ListComprehension(p[1], p[3], p[5])
 
+
 def p_comprehension_productions(p):
     '''comprehension_productions : comprehension_production
                                  | comprehension_production COMMA comprehension_productions'''
     if len(p) == 2:
         p[0] = [p[1]]
-    elif len(p) == 3:
-        p[0] = [p[1]] + p[2]
+    elif len(p) == 4:
+        p[0] = [p[1]] + p[3]
 
 
 def p_comprehension_production(p):
@@ -184,7 +185,7 @@ def p_range(p):
     elif len(p) == 6:
         p[0] = Range(p[1], None, p[3])
     elif len(p) == 7:
-        p[0] = Range(p[1], p[3], p[6])
+        p[0] = Range(p[1], p[6], p[3])
 
 
 
