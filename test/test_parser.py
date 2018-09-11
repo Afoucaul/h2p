@@ -1,5 +1,5 @@
 import unittest
-from h2p.parser import Expression, Application, parse
+from h2p.parser import Expression, Application, Value, Number, ListEnumeration, parse
 
 
 class TestH2PParser(unittest.TestCase):
@@ -37,4 +37,31 @@ class TestH2PParser(unittest.TestCase):
                     Expression("e")
                     ])
         result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_numerical_value(self):
+        inputData = "6"
+        expected = Application(Expression(Value(Number("6"))), [])
+        result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_list_enumeration(self):
+        inputData = "[1, 2, 3, 4]"
+        expected = None
+        expected = Application(
+                Expression(
+                    Value(
+                        ListEnumeration([
+                            Application(Expression(Value(Number("1"))), []),
+                            Application(Expression(Value(Number("2"))), []),
+                            Application(Expression(Value(Number("3"))), []),
+                            Application(Expression(Value(Number("4"))), [])
+                            ])
+                        )),
+                    []
+                )
+        result = parse(inputData)
+        print()
+        print(result)
+        print(expected)
         self.assertEqual(expected, result)
