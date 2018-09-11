@@ -25,11 +25,11 @@ class ListComprehension(AST): pass
 class ListEnumeration(AST): pass
 
 class Range(AST):
-    def __init__(self, first, last, step):
-        super().__init__(first, last, step)
+    def __init__(self, first, last, second):
+        super().__init__(first, last, second)
         self.first = first
         self.last = last
-        self.step = step
+        self.second = second
 
 
 

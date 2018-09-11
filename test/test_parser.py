@@ -1,5 +1,5 @@
 import unittest
-from h2p.parser import Expression, Application, Value, Number, ListEnumeration, parse
+from h2p.parser import Expression, Application, Value, Number, ListEnumeration, Range, parse
 
 
 class TestH2PParser(unittest.TestCase):
@@ -47,7 +47,6 @@ class TestH2PParser(unittest.TestCase):
 
     def test_list_enumeration(self):
         inputData = "[1, 2, 3, 4]"
-        expected = None
         expected = Application(
                 Expression(
                     Value(
@@ -61,7 +60,34 @@ class TestH2PParser(unittest.TestCase):
                     []
                 )
         result = parse(inputData)
-        print()
-        print(result)
-        print(expected)
+        self.assertEqual(expected, result)
+
+    def test_infinite_range(self):
+        inputData = "[1..]"
+        expected = Application(
+                Expression(
+                    Value(
+                        Range(Application(Expression(Value(Number("1"))), []), None, None)
+                        )
+                    ),
+                []
+                )
+        result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_infinite_range_with_step(self):
+        inputData = "[1, 3..]"
+        expected = Application(
+                Expression(
+                    Value(
+                        Range(
+                            Application(Expression(Value(Number("1"))), []), 
+                            None, 
+                            Application(Expression(Value(Number("3"))), [])
+                            )
+                        )
+                    ),
+                []
+                )
+        result = parse(inputData)
         self.assertEqual(expected, result)

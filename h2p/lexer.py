@@ -10,7 +10,9 @@ tokens = (
         'RPAREN',
         'LBRACK',
         'RBRACK',
-        'DOLLAR'
+        'DOLLAR',
+        'COMMA',
+        'DOT'
         )
 
 # Tokens 
@@ -24,17 +26,12 @@ t_RPAREN = r'\)'
 t_LBRACK = r'\['
 t_RBRACK = r'\]'
 t_DOLLAR = r'\$'
+t_COMMA = r','
+t_DOT = r'\.'
 
 t_IDENT = r'[a-zA-Z][a-zA-Z0-9]*' 
+t_NUMBER = r'\d+'
 
-def t_NUMBER(t): 
-    r'\d+' 
-    try: 
-        t.value = int(t.value) 
-    except ValueError: 
-        print("Integer value too large %d", t.value) 
-        t.value = 0 
-        return t 
 
 # Ignored characters 
 t_ignore = " \t\r\n" 
