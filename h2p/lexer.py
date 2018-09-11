@@ -2,7 +2,6 @@ tokens = (
         'IDENT', 
         'NUMBER',
         'PLUS',
-        'MINUS',
         'STAR',
         'SLASH',
         'EQUALS',
@@ -12,12 +11,14 @@ tokens = (
         'RBRACK',
         'DOLLAR',
         'COMMA',
-        'DOT'
+        'DOT',
+        'BAR',
+        'DASH',
+        'LT',
         )
 
 # Tokens 
 t_PLUS = r'\+' 
-t_MINUS = r'-' 
 t_STAR = r'\*' 
 t_SLASH = r'/' 
 t_EQUALS = r'=' 
@@ -28,6 +29,9 @@ t_RBRACK = r'\]'
 t_DOLLAR = r'\$'
 t_COMMA = r','
 t_DOT = r'\.'
+t_BAR = r'\|'
+t_DASH = r'-'
+t_LT = r'<'
 
 t_IDENT = r'[a-zA-Z][a-zA-Z0-9]*' 
 t_NUMBER = r'\d+'
