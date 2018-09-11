@@ -4,13 +4,13 @@ import ply.yacc as yacc
 
 class AST: 
     def __init__(self, *args):
-        self.args = args
+        self.children = args
 
     def __repr__(self):
-        return "{}({})".format(type(self).__name__, ", ".join(str(x) for x in self.args))
+        return "{}({})".format(type(self).__name__, ", ".join(str(x) for x in self.children))
 
     def __eq__(self, other):
-        return type(self) == type(other) and self.args == other.args
+        return type(self) == type(other) and self.children == other.children
 
 
 class Expression(AST): pass
