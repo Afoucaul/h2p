@@ -15,6 +15,7 @@ tokens = (
         'BAR',
         'DASH',
         'LT',
+        'GT',
         )
 
 # Tokens 
@@ -32,6 +33,7 @@ t_DOT = r'\.'
 t_BAR = r'\|'
 t_DASH = r'-'
 t_LT = r'<'
+t_GT = r'>'
 
 t_IDENT = r'[a-zA-Z][a-zA-Z0-9]*' 
 t_NUMBER = r'\d+'
@@ -47,3 +49,17 @@ def t_error(t):
 
 import ply.lex as lex 
 lexer = lex.lex()
+
+
+def token_stream(text):
+    lexer.input(text)
+    tkn = lexer.token()
+    while tkn is not None:
+        yield tkn
+        tkn = lexer.token()
+    raise StopIteration
+
+
+def pprint_token_stream(text):
+    for tkn in token_stream(text):
+        print("{: >7} ({})".format(tkn.type, tkn.value))
