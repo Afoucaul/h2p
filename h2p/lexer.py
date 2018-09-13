@@ -62,4 +62,8 @@ def token_stream(text):
 
 def pprint_token_stream(text):
     for tkn in token_stream(text):
-        print("{: >7} ({})".format(tkn.type, tkn.value))
+        print("{: >{padding}} ({})".format(
+            tkn.type, 
+            tkn.value, 
+            padding=(1 + max(len(w) for w in tokens))))
+    print(" ".join(tkn.value for tkn in token_stream(text)))
