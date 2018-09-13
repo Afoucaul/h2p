@@ -1,4 +1,4 @@
-class AST: 
+class HAST: 
     def __init__(self, *args):
         self.children = args
 
@@ -8,43 +8,46 @@ class AST:
     def __eq__(self, other):
         return type(self) == type(other) and self.children == other.children
 
-
-class Expression(AST): pass
-class Number(AST) : pass
-class Application(AST): pass
-class Expression(AST): pass
-class Pattern(AST): pass
-class Lambda(AST): pass
-class Value(AST): pass
-class Variable(AST): pass
-class Number(AST): pass
-class Operator(AST): pass
-class List(AST): pass
-class EmptyList(List): pass
-class ListEnumeration(List): pass
+    def transpile(self):
+        self
 
 
-class ListComprehensionProduction(AST):
-    def __init__(self, pattern: Pattern, source: List):
+class HExpression(HAST): pass
+class HNumber(HAST) : pass
+class HApplication(HAST): pass
+class HExpression(HAST): pass
+class HPattern(HAST): pass
+class HLambda(HAST): pass
+class HValue(HAST): pass
+class HVariable(HAST): pass
+class HNumber(HAST): pass
+class HOperator(HAST): pass
+class HList(HAST): pass
+class HEmptyList(HList): pass
+class HListEnumeration(HList): pass
+
+
+class HListComprehensionProduction(HAST):
+    def __init__(self, pattern, source):
         super().__init__(pattern, source)
         self.pattern = pattern
         self.source = source
 
 
-class ListComprehensionCondition(AST):
+class HListComprehensionCondition(HAST):
     def __init__(self, condition):
         super().__init__(condition)
         self.condition = condition
 
 
-class ListComprehension(List):
+class HListComprehension(HList):
     def __init__(self, element, suite):
         super().__init__(element, suite)
         self.element = element
         self.suite = suite
 
 
-class Range(List):
+class HRange(HList):
     def __init__(self, first, last, second):
         super().__init__(first, last, second)
         self.first = first
