@@ -21,17 +21,31 @@ class Pattern(AST): pass
 class Lambda(AST): pass
 class Value(AST): pass
 class Number(AST): pass
+class Operator(AST): pass
 class List(AST): pass
 class EmptyList(List): pass
 class ListEnumeration(List): pass
 
 
+class ListComprehensionProduction(AST):
+    def __init__(self, pattern: Pattern, source: List):
+        super().__init__(pattern, source)
+        self.pattern = pattern
+        self.source = source
+
+
+class ListComprehensionCondition(AST):
+    def __init__(self, condition):
+        super().__init__(condition)
+        self.condition = condition
+
+
 class ListComprehension(List):
-    def __init__(self, element, productions: [(str, List)], conditions):
-        super().__init__(element, productions, conditions)
+    def __init__(self, element, suite):
+        super().__init__(element, suite)
         self.element = element
-        self.productions = productions
-        self.confitions = conditions
+        self.suite = suite
+
 
 class Range(List):
     def __init__(self, first, last, second):
@@ -41,6 +55,16 @@ class Range(List):
         self.second = second
 
 
+def log(rule):
+    def wrapped(p):
+        print("\nIn {}:\n  {}".format(rule.__name__[2:], p.stack))
+        result = rule(p)
+        print("  {}".format(p[0]))
+        return result
+
+    wrapped.__name__ = rule.__name__
+    wrapped.__doc__ = rule.__doc__
+    return wrapped
 
 
 def p_application(p):
@@ -79,8 +103,11 @@ def p_infix_operator(p):
     '''infix_operator : PLUS 
                       | DASH 
                       | SLASH
-                      | STAR'''
-    p[0] = p[1]
+                      | STAR
+                      | LT
+                      | GT
+                      | EQUALS EQUALS'''
+    p[0] = Operator(p[1])
 
 
 def p_lambda(p):
@@ -120,43 +147,28 @@ def p_list_enumeration(p):
     '''list_enumeration : list_values'''
     p[0] = ListEnumeration(p[1])
 
-
-def p_list_comprehension(p):
-    '''list_comprehension : application BAR comprehension_productions
-                          | application BAR comprehension_productions COMMA comprehension_conditions
-                          '''
-    if len(p) == 4:
-        p[0] = ListComprehension(p[1], p[3], None)
-    elif len(p) == 6:
-        p[0] = ListComprehension(p[1], p[3], p[5])
-
-
-def p_comprehension_productions(p):
-    '''comprehension_productions : comprehension_production
-                                 | comprehension_production COMMA comprehension_productions'''
+def p_list_comprehension_productions_and_conditions(p):
+    '''comprehension_productions_and_conditions : comprehension_production_or_condition
+                                                | comprehension_productions_and_conditions COMMA comprehension_production_or_condition
+                                                '''
     if len(p) == 2:
         p[0] = [p[1]]
     elif len(p) == 4:
-        p[0] = [p[1]] + p[3]
+        p[0] = p[1] + [p[3]]
+
+def p_list_comprehension_production_or_condition(p):
+    '''comprehension_production_or_condition : comprehension_production
+                                             | comprehension_condition'''
+    p[0] = p[1]
+
+def p_list_comprehension_production(p):
+    '''comprehension_production : pattern LEFTARROW application'''
+    p[0] = ListComprehensionProduction(p[1], p[3])
 
 
-def p_comprehension_production(p):
-    '''comprehension_production : pattern LT DASH list'''
-    p[0] = (p[1], p[4])
-
-
-def p_comprehension_conditions(p):
-    '''comprehension_conditions : comprehension_condition
-                                 | comprehension_condition COMMA comprehension_conditions'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    elif len(p) == 3:
-        p[0] = [p[1]] + p[2]
-
-
-def p_comprehension_condition(p):
-    '''comprehension_condition : pattern LT DASH list'''
-    p[0] = (p[1], p[4])
+def p_list_comprehension_condition(p):
+    '''comprehension_condition : application'''
+    p[0] = ListComprehensionCondition(p[1])
     
 
 def p_pattern(p):
@@ -186,6 +198,13 @@ def p_range(p):
         p[0] = Range(p[1], None, p[3])
     elif len(p) == 7:
         p[0] = Range(p[1], p[6], p[3])
+
+
+def p_list_comprehension(p):
+    '''list_comprehension : application BAR comprehension_productions_and_conditions'''
+    if len(p) == 4:
+        p[0] = ListComprehension(p[1], p[3])
+
 
 
 
