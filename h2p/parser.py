@@ -20,6 +20,7 @@ class Expression(AST): pass
 class Pattern(AST): pass
 class Lambda(AST): pass
 class Value(AST): pass
+class Variable(AST): pass
 class Number(AST): pass
 class Operator(AST): pass
 class List(AST): pass
@@ -84,7 +85,10 @@ def p_expression(p):
                   | value
                   | LPAREN application RPAREN'''
     if len(p) == 2:
-        p[0] = Expression(p[1])
+        if type(p[1]) == Value:
+            p[0] = Expression(p[1])
+        else:
+            p[0] = Expression(Variable(p[1]))
 
     elif len(p) == 4:
         p[0] = Expression(p[2])
@@ -107,7 +111,10 @@ def p_infix_operator(p):
                       | LT
                       | GT
                       | EQUALS EQUALS'''
-    p[0] = Operator(p[1])
+    if len(p) == 2:
+        p[0] = Operator(p[1])
+    elif len(p) == 3:
+        p[0] = Operator(p[1] + p[2])
 
 
 def p_lambda(p):
