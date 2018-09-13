@@ -16,9 +16,11 @@ tokens = (
         'DASH',
         'LT',
         'GT',
+        'LEFTARROW'
         )
 
 # Tokens 
+t_LEFTARROW = r'<-'
 t_PLUS = r'\+' 
 t_STAR = r'\*' 
 t_SLASH = r'/' 
@@ -57,7 +59,6 @@ def token_stream(text):
     while tkn is not None:
         yield tkn
         tkn = lexer.token()
-    raise StopIteration
 
 
 def pprint_token_stream(text):
