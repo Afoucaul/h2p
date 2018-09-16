@@ -104,23 +104,37 @@ class HRange(HList):
         self.second = second
 
     def transpile(self):
-        x = self.last if self.first is None else self.first
-        y = None if self.first is None else self.last
-        z = None if self.second is None else self.second
-        args = [x]
-        if y is not None:
-            args.append(y)
-        if z is not None:
-            args.append(z)
-        args = [a.transpile().value for a in args]
+        if self.last is not None:
+            x = self.last if self.first is None else self.first
+            y = None if self.first is None else self.last
+            z = None if self.second is None else self.second
+            args = [x]
+            if y is not None:
+                args.append(y)
+            if z is not None:
+                args.append(z)
+            args = [a.transpile().value for a in args]
 
-        # Operations to adjust range boundaries and step
-        if len(args) >= 2:
-            args[1].n += 1
-        if len(args) == 3:
-            args[2].n -= args[0].n
+            # Operations to adjust range boundaries and step
+            if len(args) >= 2:
+                args[1].n += 1
+            if len(args) == 3:
+                args[2].n -= args[0].n
 
-        return ast.Call(ast.Name("range", None), args, None)
+            return ast.Call(ast.Name("range", None), args, None)
+
+        else:
+            start = self.first.transpile().value
+            step = ast.Num(1)
+            if self.second is not None:
+                step = self.second.transpile().value.n - start.n
+
+            kw_start = ast.keyword('start', start)
+            kw_step = ast.keyword('step', step)
+
+            return ast.Call(
+                    ast.Attribute(ast.Name("itertools", None), 'count', None),
+                    [], [kw_start, kw_step])
 
 
 class HEmptyList(HList):
