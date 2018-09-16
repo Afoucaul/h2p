@@ -11,32 +11,32 @@ class HAST:
         return type(self) == type(other) and self.children == other.children
 
     def transpile(self):
+        print("W - calling base transpile for node of type {}".format(type(self).__name__))
         return type(self)(*[c.transpile() for c in self.children])
 
 
-class HApplication(HAST):
-    def __init__(self, application, arguments):
-        super().__init__(application, arguments)
-        self.application = application
-        self.arguments = arguments
-
-    def transpile(self):
-        print("W - calling base transpile for node of type {}".format(type(self).__name__))
-        return HApplication(
-                self.application.transpile(), 
-                [arg.transpile() for arg in self.arguments])
-
-
-class HExpression(HAST): pass
 class HNumber(HAST) : pass
 class HExpression(HAST): pass
 class HPattern(HAST): pass
 class HLambda(HAST): pass
 class HVariable(HAST): pass
 class HOperator(HAST): pass
-class HList(HAST): pass
-class HEmptyList(HList): pass
-class HListEnumeration(HList): pass
+
+
+class HApplication(HAST):
+    def __init__(self, function, arguments):
+        super().__init__(function, arguments)
+        self.function = function
+        self.arguments = arguments
+
+    def transpile(self):
+        if self.arguments == []:
+            return self.function.transpile()
+
+        else:
+            return HApplication(
+                    self.application.transpile(), 
+                    [arg.transpile() for arg in self.arguments])
 
 
 class HExpression(HAST):
@@ -67,6 +67,18 @@ class HNumber(HAST):
         return ast.Num(self.value)
 
 
+class HList(HAST):
+    def transpile(self):
+        return self
+
+
+class HListComprehension(HList):
+    def __init__(self, element, suite):
+        super().__init__(element, suite)
+        self.element = element
+        self.suite = suite
+
+
 class HListComprehensionProduction(HAST):
     def __init__(self, pattern, source):
         super().__init__(pattern, source)
@@ -80,16 +92,17 @@ class HListComprehensionCondition(HAST):
         self.condition = condition
 
 
-class HListComprehension(HList):
-    def __init__(self, element, suite):
-        super().__init__(element, suite)
-        self.element = element
-        self.suite = suite
-
-
 class HRange(HList):
     def __init__(self, first, last, second):
         super().__init__(first, last, second)
         self.first = first
         self.last = last
         self.second = second
+
+
+class HEmptyList(HList):
+    def transpile(self):
+        return ast.List([], None)
+
+
+class HListEnumeration(HList): pass
