@@ -106,15 +106,19 @@ class HRange(HList):
     def transpile(self):
         x = self.last if self.first is None else self.first
         y = None if self.first is None else self.last
-        z = None if self.second is None else self.second - self.first
+        z = None if self.second is None else self.second
         args = [x]
         if y is not None:
             args.append(y)
         if z is not None:
             args.append(z)
         args = [a.transpile().value for a in args]
+
+        # Operations to adjust range boundaries and step
         if len(args) >= 2:
             args[1].n += 1
+        if len(args) == 3:
+            args[2].n -= args[0].n
 
         return ast.Call(ast.Name("range", None), args, None)
 
