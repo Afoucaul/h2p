@@ -1,5 +1,5 @@
 import unittest
-from h2p.ast import (
+from h2p.hast import (
         HExpression, 
         HApplication, 
         HValue, 
