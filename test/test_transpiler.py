@@ -32,7 +32,7 @@ print = myprint
 class TestH2PTranspiler(unittest.TestCase):
     def test_simple_expression_application(self):
         inputData = "9"
-        expected = ast.Expr(ast.Num("9"))
+        expected = ast.Expr(ast.Num(9))
         result = transpile(inputData)
 
         self.assertTrue(compare_ast(result, expected))
@@ -40,6 +40,13 @@ class TestH2PTranspiler(unittest.TestCase):
     def test_empty_list(self):
         inputData = "[]"
         expected = ast.Expr(ast.List([], None))
+        result = transpile(inputData)
+
+        self.assertTrue(compare_ast(result, expected))
+
+    def test_simple_enumerated_list(self):
+        inputData = "[1, 2, 3]"
+        expected = ast.Expr(ast.List([ast.Num(1), ast.Num(2), ast.Num(3)], None))
         result = transpile(inputData)
 
         self.assertTrue(compare_ast(result, expected))

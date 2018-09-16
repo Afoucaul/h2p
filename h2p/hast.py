@@ -109,4 +109,10 @@ class HEmptyList(HList):
         return ast.List([], None)
 
 
-class HListEnumeration(HList): pass
+class HListEnumeration(HList):
+    def __init__(self, values):
+        super().__init__(values)
+        self.values = values
+
+    def transpile(self):
+        return ast.List([v.transpile().value for v in self.values], None)
