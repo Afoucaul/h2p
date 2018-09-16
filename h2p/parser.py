@@ -1,19 +1,20 @@
 from .lexer import tokens
 import ply.yacc as yacc 
 
-from .ast import (
-        HExpression, 
+from .hast import (
         HApplication, 
+        HEmptyList,
+        HExpression, 
+        HListComprehension, 
+        HListComprehensionCondition,
+        HListComprehensionProduction,
+        HListEnumeration, 
+        HNumber, 
+        HOperator,
+        HPattern,
+        HRange, 
         HValue, 
         HVariable, 
-        HNumber, 
-        HListEnumeration, 
-        HListComprehension, 
-        HListComprehensionProduction,
-        HListComprehensionCondition,
-        HRange, 
-        HPattern,
-        HOperator
         )
 
 def log(rule):
@@ -100,7 +101,7 @@ def p_list(p):
     if len(p) == 4:
         p[0] = p[2]
     elif len(p) == 3:
-        p[0] = EmptyList()
+        p[0] = HEmptyList()
 
 
 def p_list_description(p):
