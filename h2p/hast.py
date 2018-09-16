@@ -127,7 +127,8 @@ class HRange(HList):
             start = self.first.transpile().value
             step = ast.Num(1)
             if self.second is not None:
-                step = self.second.transpile().value.n - start.n
+                step = self.second.transpile().value
+                step.n -= start.n
 
             kw_start = ast.keyword('start', start)
             kw_step = ast.keyword('step', step)
