@@ -103,6 +103,21 @@ class HRange(HList):
         self.last = last
         self.second = second
 
+    def transpile(self):
+        x = self.last if self.first is None else self.first
+        y = None if self.first is None else self.last
+        z = None if self.second is None else self.second - self.first
+        args = [x]
+        if y is not None:
+            args.append(y)
+        if z is not None:
+            args.append(z)
+        args = [a.transpile().value for a in args]
+        if len(args) >= 2:
+            args[1].n += 1
+
+        return ast.Call(ast.Name("range", None), args, None)
+
 
 class HEmptyList(HList):
     def transpile(self):
