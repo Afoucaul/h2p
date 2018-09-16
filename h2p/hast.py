@@ -21,6 +21,7 @@ class HApplication(HAST):
         self.arguments = arguments
 
     def transpile(self):
+        print("W - calling base transpile for node of type {}".format(type(self).__name__))
         return HApplication(
                 self.application.transpile(), 
                 [arg.transpile() for arg in self.arguments])
@@ -36,6 +37,16 @@ class HOperator(HAST): pass
 class HList(HAST): pass
 class HEmptyList(HList): pass
 class HListEnumeration(HList): pass
+
+
+class HExpression(HAST):
+    def __init__(self, body):
+        super().__init__(body)
+        self.body = body
+
+    def transpile(self):
+        if isinstance(self.body, HValue):
+            return ast.Expr(self.body.transpile())
 
 
 class HValue(HAST):
