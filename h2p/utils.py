@@ -11,7 +11,12 @@ def compare_ast(t1, t2):
         return t1 == t2
 
     for k, c1 in t1.__dict__.items():
-        c2 = t2.__dict__[k]
+        try:
+            c2 = t2.__dict__[k]
+        except AttributeError:
+            print("Attribute {} not found:".format(k), c2)
+            return False
+
         if not compare_ast(c1, c2):
             print("Attribute {} differs:".format(k), c1, c2)
             return False
