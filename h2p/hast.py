@@ -61,6 +61,10 @@ class HValue(HAST):
 class HNumber(HAST):
     def __init__(self, value):
         super().__init__(value)
+        if str(int(value)) == value:
+            value = int(value)
+        else:
+            value = float(value)
         self.value = value
 
     def transpile(self):
