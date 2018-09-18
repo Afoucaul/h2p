@@ -11,13 +11,17 @@ from h2p.hast import (
         HListComprehensionCondition,
         HRange, 
         HPattern,
-        HOperator
+        HOperator,
+        HModule,
+        HDeclaration,
         )
 import h2p.parser
 import h2p.lexer as lexer
 
-def parse(text):
-    return h2p.parser.parse(text, start='application')
+
+def parse(text, start='application'):
+    return h2p.parser.parse(text, start=start)
+
 
 class TestH2PParser(unittest.TestCase):
     def test_simple_expression_application(self):
@@ -220,4 +224,22 @@ class TestH2PParser(unittest.TestCase):
         result = parse(inputData)
         self.assertEqual(expected, result)
         result = parse(inputData)
+        self.assertEqual(expected, result)
+
+    def test_simple_module(self):
+        inputData = """
+        f = map succ
+        """
+        expected = HModule(
+                None, None, None,
+                [
+                    HDeclaration(
+                        'f', 
+                        HApplication(
+                            HExpression(HVariable('map')), 
+                            [HExpression(HVariable('succ'))]
+                            )
+                        )
+                    ])
+        result = parse(inputData, start='module')
         self.assertEqual(expected, result)
