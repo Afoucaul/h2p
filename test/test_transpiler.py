@@ -15,10 +15,13 @@ from h2p.hast import (
         HPattern,
         HOperator
         )
-from h2p.transpiler import transpile
-from h2p.parser import parse
-import h2p.lexer as lexer
+import h2p.transpiler
 from h2p.utils import compare_ast
+
+
+def transpile(text, start='application'):
+    return h2p.transpiler.transpile(text, start=start)
+
 
 _print = print
 def myprint(x, *args, **kwargs):
@@ -38,6 +41,7 @@ class TestH2PTranspiler(unittest.TestCase):
         inputData = "9"
         expected = ast.Expr(ast.Num(9))
         result = transpile(inputData)
+        print(result)
 
         self.assertTrue(compare_ast(result, expected))
 

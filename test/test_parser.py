@@ -13,9 +13,11 @@ from h2p.hast import (
         HPattern,
         HOperator
         )
-from h2p.parser import parse
+import h2p.parser
 import h2p.lexer as lexer
 
+def parse(text):
+    return h2p.parser.parse(text, start='application')
 
 class TestH2PParser(unittest.TestCase):
     def test_simple_expression_application(self):
