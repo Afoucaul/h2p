@@ -9,6 +9,7 @@ from .hast import (
         HListComprehensionCondition,
         HListComprehensionProduction,
         HListEnumeration, 
+        HModule,
         HNumber, 
         HOperator,
         HPattern,
@@ -27,6 +28,48 @@ def log(rule):
     wrapped.__name__ = rule.__name__
     wrapped.__doc__ = rule.__doc__
     return wrapped
+
+
+def p_module(p):
+    '''module : declarations
+              | module_declaration declarations'''
+    if len(p) == 2:
+        p[0] = HModule(None, None, p[1])
+    elif len(p) == 3:
+        p[0] = HModule(p[1], None, p[2])
+
+
+def p_declarations(p):
+    '''declarations : declaration
+                    | declarations declaration'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 3:
+        p[0] = p[1] + [p[2]]
+
+
+def p_declaration(p):
+    '''declaration : IDENT EQUALS application'''
+    if len(p) == 4:
+        p[0] = HDeclaration(p[1], p[3])
+
+
+def p_module_declaration(p):
+    '''module_declaration : MODULE IDENT LPAREN        RPAREN WHERE
+                          | MODULE IDENT LPAREN idents RPAREN WHERE'''
+    if len(p) == 6:
+        p[0] = HModuleDeclaration(p[2], [])
+    elif len(p) == 7:
+        p[0] = HModuleDeclaration(p[2], p[4])
+
+
+def p_idents(p):
+    '''idents : IDENT
+              | idents IDENT'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    elif len(p) == 3:
+        p[0] = p[1] + [p[2]]
 
 
 def p_application(p):
@@ -175,10 +218,6 @@ def p_list_comprehension(p):
 
 
 
-
-
-parser = yacc.yacc() 
-
-
-def parse(text):
+def parse(text, start='module'):
+    parser = yacc.yacc(start=start) 
     return parser.parse(text)
