@@ -1,4 +1,4 @@
 from . import parser
 
-def transpile(text):
-    return parser.parse(text).transpile()
+def transpile(text, start='module'):
+    return parser.parse(text, start=start).transpile()
