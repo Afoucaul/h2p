@@ -144,18 +144,18 @@ class HEmptyList(HList):
 
 
 class HModule(HAST): 
-    def __init__(self, name, imports, body):
-        super().__init__(name, imports, body)
+    def __init__(self, name, exportedFunctions, imports, body):
+        super().__init__(name, exportedFunctions, imports, body)
         self.name = name
+        self.exported_functions = exportedFunctions
         self.imports = imports
         self.body = body
 
 
 class HDeclaration(HAST):
     def __init__(self, name, body):
-        super().__init__(name, exportedFunctions, body)
+        super().__init__(name, body)
         self.name = name
-        self.exported_functions = exportedFunctions
         self.body = body
 
 

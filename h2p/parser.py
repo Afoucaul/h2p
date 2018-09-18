@@ -16,6 +16,8 @@ from .hast import (
         HRange, 
         HValue, 
         HVariable, 
+        HDeclaration,
+        HModuleDeclaration,
         )
 
 def log(rule):
@@ -34,9 +36,9 @@ def p_module(p):
     '''module : declarations
               | module_declaration declarations'''
     if len(p) == 2:
-        p[0] = HModule(None, None, p[1])
+        p[0] = HModule(None, None, None, p[1])
     elif len(p) == 3:
-        p[0] = HModule(p[1], None, p[2])
+        p[0] = HModule(p[1].name, p[1].exported_functions, None, p[2])
 
 
 def p_declarations(p):
