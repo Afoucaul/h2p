@@ -143,6 +143,29 @@ class HEmptyList(HList):
         return ast.List([], None)
 
 
+class HModule(HAST): 
+    def __init__(self, name, imports, body):
+        super().__init__(name, imports, body)
+        self.name = name
+        self.imports = imports
+        self.body = body
+
+
+class HDeclaration(HAST):
+    def __init__(self, name, body):
+        super().__init__(name, exportedFunctions, body)
+        self.name = name
+        self.exported_functions = exportedFunctions
+        self.body = body
+
+
+class HModuleDeclaration(HAST):
+    def __init__(self, name, exportedFunctions):
+        super().__init__(name, exportedFunctions)
+        self.name = name
+        self.exported_functions = exportedFunctions
+
+
 class HListEnumeration(HList):
     def __init__(self, values):
         super().__init__(values)
