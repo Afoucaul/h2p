@@ -16,7 +16,9 @@ tokens = (
         'DASH',
         'LT',
         'GT',
-        'LEFTARROW'
+        'LEFTARROW',
+        'MODULE',
+        'WHERE',
         )
 
 # Tokens 
@@ -36,6 +38,8 @@ t_BAR = r'\|'
 t_DASH = r'-'
 t_LT = r'<'
 t_GT = r'>'
+t_MODULE = r'MODULE'
+t_WHERE = r'WHERE'
 
 t_IDENT = r'[a-zA-Z][a-zA-Z0-9]*' 
 t_NUMBER = r'\d+'
