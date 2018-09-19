@@ -92,3 +92,13 @@ class TestH2PTranspiler(unittest.TestCase):
         result = transpile(inputData)
 
         self.assertTrue(compare_ast(result, expected))
+
+    def test_simple_function_call(self):
+        inputData = "f 1 2 3"
+        expected = ast.Expr(ast.Call(
+            ast.Name("f", None), 
+            [ast.Num(1), ast.Num(2), ast.Num(3)], 
+            []))
+        result = transpile(inputData)
+
+        self.assertTrue(compare_ast(result, expected))
