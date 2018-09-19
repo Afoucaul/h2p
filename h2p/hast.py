@@ -19,7 +19,6 @@ class HNumber(HAST) : pass
 class HExpression(HAST): pass
 class HPattern(HAST): pass
 class HLambda(HAST): pass
-class HVariable(HAST): pass
 class HOperator(HAST): pass
 
 
@@ -34,9 +33,10 @@ class HApplication(HAST):
             return self.function.transpile()
 
         else:
-            return HApplication(
-                    self.application.transpile(), 
-                    [arg.transpile() for arg in self.arguments])
+            return ast.Expr(ast.Call(
+                    self.function.transpile(), 
+                    [arg.transpile().value for arg in self.arguments],
+                    []))
 
 
 class HExpression(HAST):
@@ -48,6 +48,9 @@ class HExpression(HAST):
         if isinstance(self.body, HValue):
             return ast.Expr(self.body.transpile())
 
+        elif isinstance(self.body, HVariable):
+            return self.body.transpile()
+
 
 class HValue(HAST):
     def __init__(self, value_holder):
@@ -56,6 +59,15 @@ class HValue(HAST):
 
     def transpile(self):
         return self.value_holder.transpile()
+
+
+class HVariable(HAST):
+    def __init__(self, name):
+        super().__init__(name)
+        self.name = name
+
+    def transpile(self):
+        return ast.Name(self.name, None)
 
     
 class HNumber(HAST):
